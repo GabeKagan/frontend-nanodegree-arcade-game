@@ -1,11 +1,14 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.x = x;
+    this.y = y; //It might be nice to refactor this eventually.
+    //Add a velocity variable
 }
 
 // Update the enemy's position, required method for game
@@ -16,7 +19,7 @@ Enemy.prototype.update = function(dt) {
     // all computers.
 
     //Something like this?
-    //this.x += dt;
+    this.x += dt*100;
 }
 
 // Draw the enemy on the screen, required method for game
@@ -75,10 +78,11 @@ Player.prototype.handleInput = function(code) {
 
 var player = new Player(200,375); //Now exists.
 
-//Bloc this out.
+//Modify this so that it eventually spawns multiple buggies.
+//Also, it might be prudent to stop rendering bugs when they go off the screen.
 var allEnemies = []; 
-//var enemy = new Enemy();
-//allEnemies.push(enemy);
+var enemy = new Enemy(-100,85);
+allEnemies.push(enemy);
 
 
 //Now we need code to spawn arbitrary enemies.
