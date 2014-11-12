@@ -41,8 +41,31 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Player.prototype.handleInput = function() {
-    //Code this!
+Player.prototype.handleInput = function(code) {
+    //Adjust vertical movement so that the player stays in the same relative position on the grid.
+    switch (code) {
+        case "left":
+            if(this.x == 0) { break; } 
+            this.x -= 100;
+            console.log(this.x);
+            break;
+        case "up":
+            this.y -= 84;
+            if(this.y <= 0) { this.y = 375}; //If we reach the top, we'll need some victory code.
+            console.log(this.y);
+            break;
+        case "right":
+            if(this.x == 400) { break; } 
+            this.x += 100;
+            console.log(this.x);
+            break;
+        case "down": 
+            if(this.y == 375) { break; } 
+            this.y += 84;
+            console.log(this.y);
+            break;
+        //Add new keys as we implement functionality!
+    }
 }
 
 // Now instantiate your objects.
@@ -53,7 +76,7 @@ Player.prototype.handleInput = function() {
 var player = new Player(200,375); //Now exists.
 
 //Bloc this out.
-//var allEnemies = []; 
+var allEnemies = []; 
 //var enemy = new Enemy();
 //allEnemies.push(enemy);
 
