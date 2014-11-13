@@ -9,6 +9,10 @@ var Enemy = function(x,y) {
     this.x = x;
     this.y = y; //It might be nice to refactor this eventually.
     this.speed = (Math.random()*2) + 1;
+    //It would be best to compute the width and height from the sprite.
+    //However, I'll be using hardcoded values for now since there's only one enemy type.
+    this.width = 100;
+    this.height = 171; 
 }
 
 // Update the enemy's position, required method for game
@@ -34,6 +38,8 @@ var Player = function (x,y) {
     this.sprite = "images/char-boy.png"; //Eventually replace this with something less... terrifying.
     this.x = x;
     this.y = y;
+    this.width = 100;
+    this.height = 171; 
 }
 
 Player.prototype.update = function(dt) {
@@ -50,22 +56,18 @@ Player.prototype.handleInput = function(code) {
         case "left":
             if(this.x == 0) { break; } 
             this.x -= 100;
-            console.log(this.x);
             break;
         case "up":
             this.y -= 84;
             if(this.y <= 0) { this.y = 375}; //If we reach the top, we'll need some victory code.
-            console.log(this.y);
             break;
         case "right":
             if(this.x == 400) { break; } 
             this.x += 100;
-            console.log(this.x);
             break;
         case "down": 
             if(this.y == 375) { break; } 
             this.y += 84;
-            console.log(this.y);
             break;
         //Add new keys as we implement functionality!
     }
@@ -80,19 +82,48 @@ var player = new Player(200,375); //Player spawns at the bottom-center of the pl
 //Preparation for pushing enemies into the update function.
 var allEnemies = [];
 
-setInterval(function () {pushEnemies()}, 1000); //Doesn't repeat. Yet. Encapsulate this function?
+setInterval(function () {pushEnemies()}, 1000); //Generates a new enemy every second. 
+//Encapsulate this function?
 function pushEnemies () {
     /*
-    
+    Complicated math! This generates a new Y-coord with one of the following values: 55, 135, 215.
+    These correspond to the stone lanes.
     */
     var enemy = new Enemy(-100,(55 + (Math.floor((Math.random() * 3)) * 80) )) 
     allEnemies.push(enemy);
-    //Removes enemies from allEnemies when they're off the screen
+    //Removes enemies from allEnemies when they're off the screen. 
+    //It waits until a bug is ~100 pixels off the screen to prevent random disappearances.
     if(allEnemies[0].x >= 600) {allEnemies.shift()};
 }
 
+/*A simple bounding box algorithm for collision detection.
+  This will have to be modified because the game's graphics
+  contain large amounts of vertical whitespace.
+  Based off code from:
+  http://blog.sklambert.com/html5-canvas-game-2d-collision-detection/
 
- //Make an enemy every second.
+  If I implement powerups, this code will either need to be modified,
+  or I may need to implement a different system, perhaps with coordinates.
+*/
+function checkCollisions() {
+    for(var i=0; i <allEnemies.length; i++) //I fear this will be highly inefficient.
+    {
+        //Comparing the location of the player and each enemy.
+        //The Y coordinate check was removed because bugs can only impact from the left and right.
+        if (
+        player.x < allEnemies[i].x + allEnemies[i].width //I think this is the problem clause.
+        && player.x + player.width  > allEnemies[i].x 
+        && (player.y - allEnemies[i].y) < 10
+        ) //Compensating for imprecisions in the grid?   
+        {
+            //Move the player back to his original coordinates. We'll do more later.
+            player.x = 200;
+            player.y = 375;
+        }
+
+    }
+
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
