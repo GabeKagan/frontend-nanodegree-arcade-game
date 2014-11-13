@@ -8,7 +8,7 @@ var Enemy = function(x,y) {
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
     this.y = y; //It might be nice to refactor this eventually.
-    //Add a velocity variable
+    this.speed = (Math.random()*2) + 1;
 }
 
 // Update the enemy's position, required method for game
@@ -19,7 +19,7 @@ Enemy.prototype.update = function(dt) {
     // all computers.
 
     //Something like this?
-    this.x += dt*100;
+    this.x += dt*100*this.speed; //Replace 100 with "difficulty" later.
 }
 
 // Draw the enemy on the screen, required method for game
@@ -45,7 +45,7 @@ Player.prototype.render = function() {
 }
 
 Player.prototype.handleInput = function(code) {
-    //Adjust vertical movement so that the player stays in the same relative position on the grid.
+    //Adjust vertical movement offset so that the player stays in the same relative position on the grid.
     switch (code) {
         case "left":
             if(this.x == 0) { break; } 
@@ -75,14 +75,17 @@ Player.prototype.handleInput = function(code) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-
-var player = new Player(200,375); //Now exists.
+var player = new Player(200,375); //Player spawns at the bottom-center of the playfield.
 
 //Modify this so that it eventually spawns multiple buggies.
 //Also, it might be prudent to stop rendering bugs when they go off the screen.
 var allEnemies = []; 
-var enemy = new Enemy(-100,85);
+var enemy = new Enemy(-100,85); //Find suitable Y coords for generation.
 allEnemies.push(enemy);
+//How to operate the enemies array:
+//Set up a continous loop to push a new enemy in every few seconds.
+    //Add a parameter to randomize velocities (done).
+    //Cull bugs when they reach the end of the screen (500-600?)
 
 
 //Now we need code to spawn arbitrary enemies.
