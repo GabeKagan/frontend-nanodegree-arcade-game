@@ -77,21 +77,22 @@ Player.prototype.handleInput = function(code) {
 
 var player = new Player(200,375); //Player spawns at the bottom-center of the playfield.
 
-//Modify this so that it eventually spawns multiple buggies.
-//Also, it might be prudent to stop rendering bugs when they go off the screen.
-var allEnemies = []; 
-var enemy = new Enemy(-100,85); //Find suitable Y coords for generation.
-allEnemies.push(enemy);
-//How to operate the enemies array:
-//Set up a continous loop to push a new enemy in every few seconds.
-    //Add a parameter to randomize velocities (done).
-    //Cull bugs when they reach the end of the screen (500-600?)
+//Preparation for pushing enemies into the update function.
+var allEnemies = [];
 
-
-//Now we need code to spawn arbitrary enemies.
-Enemy.prototype.makeEnemy = function() {
-    //allEnemies.push(new Enemy); //I don't think this is legal Javascript code.
+setInterval(function () {pushEnemies()}, 1000); //Doesn't repeat. Yet. Encapsulate this function?
+function pushEnemies () {
+    /*
+    
+    */
+    var enemy = new Enemy(-100,(55 + (Math.floor((Math.random() * 3)) * 80) )) 
+    allEnemies.push(enemy);
+    //Removes enemies from allEnemies when they're off the screen
+    if(allEnemies[0].x >= 600) {allEnemies.shift()};
 }
+
+
+ //Make an enemy every second.
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
