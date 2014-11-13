@@ -11,7 +11,7 @@ var Enemy = function(x,y) {
     this.speed = (Math.random()*2) + 1;
     //It would be best to compute the width and height from the sprite.
     //However, I'll be using hardcoded values for now since there's only one enemy type.
-    this.width = 100;
+    this.width = 80;
     this.height = 171; 
 }
 
@@ -38,7 +38,7 @@ var Player = function (x,y) {
     this.sprite = "images/char-boy.png"; //Eventually replace this with something less... terrifying.
     this.x = x;
     this.y = y;
-    this.width = 100;
+    this.width = 80;
     this.height = 171; 
 }
 
