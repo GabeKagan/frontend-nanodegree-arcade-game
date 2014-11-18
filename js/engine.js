@@ -45,6 +45,10 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
+
+        /*
+        Pause is implemented by only updating if a certain flag is set.
+         */
         update(dt);
         render();
 
@@ -81,6 +85,7 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
+        document.getElementById("score").innerHTML = "Score: " + currentScore;
     }
 
     /* This is called by the update function  and loops through all of the

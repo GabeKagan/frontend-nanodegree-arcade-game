@@ -61,7 +61,10 @@ Player.prototype.handleInput = function(code) {
             break;
         case "up":
             this.y -= 84;
-            if(this.y <= 0) { this.y = 375}; //If we reach the top, we'll need some victory code.
+            if(this.y <= 0) {
+             this.y = 375;
+             currentScore += 100;
+             }; 
             break;
         case "right":
             if(this.x == 400) { break; } 
@@ -75,14 +78,11 @@ Player.prototype.handleInput = function(code) {
     }
 }
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
+//Preparation for various useful tasks.
 var player = new Player(200,375); //Player spawns at the bottom-center of the playfield.
-
-//Preparation for pushing enemies into the update function.
-var allEnemies = [];
+var allEnemies = []; //An array of enemies for pushEnemies
+var pauseState = false; //Stores whether the game is paused or not.
+var currentScore = 0; //Earned by playing well, lost by resetting the game.
 
 setInterval(function () {pushEnemies()}, 1000); //Generates a new enemy every second. 
 //Encapsulate this function?
@@ -144,7 +144,7 @@ document.addEventListener('keyup', function(e) {
 });
 
 //Linked to a button on the page.
-//Click to pause, click again to resume.
+//Modal pausing is... a bit simpler than expected.
 function changePauseState(){
-    window.alert("Not implemented yet");
+    window.alert("The game is now paused. Close this dialog to unpause.");
 }
