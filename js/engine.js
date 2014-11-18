@@ -68,7 +68,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        //reset();
         lastTime = Date.now();
         main();
     }
@@ -160,14 +160,18 @@ var Engine = (function(global) {
         player.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /* When initially provided, This reset function only was called by init.
+     * Now, it'll get called on certain collisions instead.
+     * No point in resetting every frame.
      */
-    function reset() {
-        // noop
+    function resetGame() {
+        //Move the player back to his original coordinates.
+        player.x = 200;
+        player.y = 375;
+        //Lose your score
+        currentScore = 0;
     }
-
+    
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.

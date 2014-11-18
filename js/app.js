@@ -14,7 +14,7 @@ var Enemy = function(x,y) {
     //It would be best to compute the width and height from the sprite.
     //However, I'll be using hardcoded values for now since there's only one enemy type.
     this.width = 80;
-    this.height = 100; 
+    this.height = 80; //Originally 171, currently being reduced for debug purposes.
 }
 
 // Update the enemy's position, required method for game
@@ -41,7 +41,7 @@ var Player = function (x,y) {
     this.x = x;
     this.y = y;
     this.width = 80;
-    this.height = 100; 
+    this.height = 80; //Also originally 171
 }
 
 Player.prototype.update = function(dt) {
@@ -109,7 +109,8 @@ function pushEnemies () {
   or I may need to implement a different system, perhaps with coordinates.
 */
 function checkCollisions() {
-    for(var i=0; i <allEnemies.length; i++) //I fear this will be highly inefficient.
+    //Checking for collisions with enemies first.
+    for(var i=0; i <allEnemies.length; i++)
     {
         //Comparing the location of the player and each enemy.
         //The Y coordinate check was modified because bugs can only impact from the left and right.
@@ -120,12 +121,13 @@ function checkCollisions() {
         && (player.y - allEnemies[i].y) < 10
         ) //Compensating for imprecisions in the grid?   
         {
-            //Move the player back to his original coordinates. We'll do more later.
-            player.x = 200;
-            player.y = 375;
+            window.alert("You got hit by something. Probably. Needs debug info.");
+            Engine.resetGame(); //Returns not defined despite being in engine.js!!!
         }
 
     }
+    //You can just have a different collision loop for different types of collidables!
+    //Nothing yet, though.
 
 }
 
