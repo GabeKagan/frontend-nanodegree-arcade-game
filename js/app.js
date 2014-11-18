@@ -1,3 +1,5 @@
+//Enemy and player should probably be made into members of a superclass at one point.   
+
 // Enemies our player must avoid
 var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
@@ -12,7 +14,7 @@ var Enemy = function(x,y) {
     //It would be best to compute the width and height from the sprite.
     //However, I'll be using hardcoded values for now since there's only one enemy type.
     this.width = 80;
-    this.height = 171; 
+    this.height = 100; 
 }
 
 // Update the enemy's position, required method for game
@@ -39,7 +41,7 @@ var Player = function (x,y) {
     this.x = x;
     this.y = y;
     this.width = 80;
-    this.height = 171; 
+    this.height = 100; 
 }
 
 Player.prototype.update = function(dt) {
@@ -93,6 +95,7 @@ function pushEnemies () {
     allEnemies.push(enemy);
     //Removes enemies from allEnemies when they're off the screen. 
     //It waits until a bug is ~100 pixels off the screen to prevent random disappearances.
+    //This should probably called somewhere else, though.
     if(allEnemies[0].x >= 600) {allEnemies.shift()};
 }
 
@@ -109,7 +112,8 @@ function checkCollisions() {
     for(var i=0; i <allEnemies.length; i++) //I fear this will be highly inefficient.
     {
         //Comparing the location of the player and each enemy.
-        //The Y coordinate check was removed because bugs can only impact from the left and right.
+        //The Y coordinate check was modified because bugs can only impact from the left and right.
+        //It still needs tweaking in that regard.
         if (
         player.x < allEnemies[i].x + allEnemies[i].width //I think this is the problem clause.
         && player.x + player.width  > allEnemies[i].x 
@@ -138,3 +142,9 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//Linked to a button on the page.
+//Click to pause, click again to resume.
+function changePauseState(){
+    window.alert("Not implemented yet");
+}
