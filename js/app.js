@@ -58,9 +58,11 @@ Player.prototype.handleInput = function(code) {
         case "left":
             if(this.x == 0) { break; } 
             this.x -= 100;
+            playerMove.play();
             break;
         case "up":
             this.y -= 84;
+            playerMove.play();
             if(this.y <= 0) {
              this.y = 375;
              currentScore += 100;
@@ -69,10 +71,12 @@ Player.prototype.handleInput = function(code) {
         case "right":
             if(this.x == 400) { break; } 
             this.x += 100;
+            playerMove.play();
             break;
         case "down": 
             if(this.y == 375) { break; } 
             this.y += 84;
+            playerMove.play();
             break;
         //Add new keys as we implement functionality!
     }
@@ -81,8 +85,11 @@ Player.prototype.handleInput = function(code) {
 //Preparation for various useful tasks.
 var player = new Player(200,375); //Player spawns at the bottom-center of the playfield.
 var allEnemies = []; //An array of enemies for pushEnemies
-var pauseState = false; //Stores whether the game is paused or not.
+var pauseState = false; //Stores whether the game is paused or not. Deprecated.
 var currentScore = 0; //Earned by playing well, lost by resetting the game.
+//Sound effects.
+var playerMove = new Audio("js/move.wav");
+var playerDeath = new Audio("js/exploding_crap.wav")
 
 setInterval(function () {pushEnemies()}, 1000); //Generates a new enemy every second. 
 //Encapsulate this function?
@@ -115,7 +122,6 @@ function checkCollisions() {
         //Comparing the location of the player and each enemy.
         //The Y coordinate check was modified because bugs can only impact from the left and right.
         //It still needs tweaking in that regard.
-        console.log(player.y - allEnemies[i].y);
         if (
         player.x < allEnemies[i].x + allEnemies[i].width 
         && player.x + player.width  > allEnemies[i].x 
@@ -134,6 +140,9 @@ function checkCollisions() {
               + ") (" + allEnemies[i].y + " , "
               + (allEnemies[i].y + allEnemies[i].height) + ").");
             */
+
+            //Play a sound effect before resetting.
+            playerDeath.play();
             resetGame();
         }
 
