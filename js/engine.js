@@ -170,6 +170,7 @@ var Engine = (function(global) {
         player.y = 375;
         //Lose your score
         currentScore = 0;
+        allEnemies = [];
     }
     
     /* Go ahead and load all of the images we know we're going to need to
@@ -190,4 +191,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    global.resetGame = resetGame;
 })(this);

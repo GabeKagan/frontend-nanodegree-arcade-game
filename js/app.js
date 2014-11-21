@@ -110,17 +110,21 @@ function pushEnemies () {
 */
 function checkCollisions() {
     //Checking for collisions with enemies first.
-    for(var i=0; i <allEnemies.length; i++)
+    for(var i=0; i<allEnemies.length; i++)
     {
         //Comparing the location of the player and each enemy.
         //The Y coordinate check was modified because bugs can only impact from the left and right.
         //It still needs tweaking in that regard.
+        console.log(player.y - allEnemies[i].y);
         if (
         player.x < allEnemies[i].x + allEnemies[i].width 
         && player.x + player.width  > allEnemies[i].x 
-        && (player.y - allEnemies[i].y) < 10 && (player.y - allEnemies[i].y) >= 0
+        //Due to desync in the y-values of objects, this is required to make collision detection work.
+        && (player.y - allEnemies[i].y) < 10 
+        && (player.y - allEnemies[i].y) >= -20  
         ) //The second y-clause is required to prevent bugs below the player from registering as hits.
         {
+            
             /*
             window.alert("You got hit by something. Probably. Debug info: Your coords are ("
              + player.x + " , " + (player.x + player.width) + ") (" + player.y + " , "
@@ -130,7 +134,7 @@ function checkCollisions() {
               + ") (" + allEnemies[i].y + " , "
               + (allEnemies[i].y + allEnemies[i].height) + ").");
             */
-            Engine.resetGame(); //Returns not defined despite being in engine.js!!! This is a scope issue.
+            resetGame();
         }
 
     }
