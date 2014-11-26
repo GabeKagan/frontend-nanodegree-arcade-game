@@ -1,6 +1,4 @@
-//Enemy and player should probably be made into members of a superclass at one point.   
-
-// Enemies our player must avoid
+// Based off the example code provided for this project.
 var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -9,61 +7,58 @@ var Enemy = function(x,y) {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
-    this.y = y; //It might be nice to refactor this eventually.
+    this.y = y; 
+    //Added these variables for extra functionality.
     this.speed = (Math.random()*2) + 1;
     //It would be best to compute the width and height from the sprite.
     //However, I'll be using hardcoded values for now since there's only one enemy type.
     this.width = 80;
-    this.height = 80; //Originally 171, currently being reduced for debug purposes.
+    this.height = 80; //Originally 171, currently being reduced to keep collision detection working.
 }
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
 
-    //Something like this?
-    this.x += dt*100*this.speed; //Replace 100 with "difficulty" later.
+    this.x += dt*100*this.speed; //Use the enemy's computed speed and our delta to compute movement.
+    //It might be interesting to dynamically adjust monster speed in later versions.
 }
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen, required method for game.
+// This uses the provided functions in resources.js
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 var Player = function (x,y) {
-    this.sprite = "images/char-boy.png"; //Eventually replace this with something less... terrifying.
+    this.sprite = "images/char-boy.png";
     this.x = x;
     this.y = y;
     this.width = 80;
-    this.height = 80; //Also originally 171
+    this.height = 80; //See Enemy.height for an explanation of this value.
 }
 
 Player.prototype.update = function(dt) {
-    //Do something!
+    //This function doesn't do anything or even get called because of how I handle collision detection.
+    //I'm leaving it in, in case I need to call a player-related function every frame(delta).
 }
 
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y); //Exact same type of function as Enemy.render
 }
 
 Player.prototype.handleInput = function(code) {
-    //Adjust vertical movement offset so that the player stays in the same relative position on the grid.
+    //Converts keyboard input codes (mapped to words instead of IDs) into player movement. 
     switch (code) {
         case "left":
-            if(this.x == 0) { break; } 
+            if(this.x == 0) { break; } //If -> breaks prevent the player from moving offscreen.
             this.x -= 100;
             playerMove.play();
             break;
         case "up":
             this.y -= 84;
             playerMove.play();
-            if(this.y <= 0) {
+            if(this.y <= 0) { //This conditional moves the player back to the start and increases their score.
              this.y = 375;
              currentScore += 100;
              }; 
@@ -78,28 +73,33 @@ Player.prototype.handleInput = function(code) {
             this.y += 84;
             playerMove.play();
             break;
-        //Add new keys as we implement functionality!
+
     }
 }
 
-//Preparation for various useful tasks.
+//Declaration of useful variables.
 var player = new Player(200,375); //Player spawns at the bottom-center of the playfield.
 var allEnemies = []; //An array of enemies for pushEnemies
-var pauseState = false; //Stores whether the game is paused or not. Deprecated.
+var pauseState = false; //Used to suppress calculations when the game is paused
 var currentScore = 0; //Earned by playing well, lost by resetting the game.
 //Sound effects.
 var playerMove = new Audio("js/move.wav");
 var playerDeath = new Audio("js/exploding_crap.wav")
 
-setInterval(function () {pushEnemies()}, 1000); //Generates a new enemy every second. 
-//Encapsulate this function?
+//Generates a new enemy every second. For consistency, this is not tied to the delta.
+//Spawn times should be consistent on all but the oldest and weakest computers.
+setInterval(function () {pushEnemies()}, 1000); 
+
 function pushEnemies () {
     /*
     Complicated math! This generates a new Y-coord with one of the following values: 55, 135, 215.
-    These correspond to the stone lanes.
+    These correspond to the stone lanes. Also, we don't want to create more enemies if paused.
     */
-    var enemy = new Enemy(-100,(55 + (Math.floor((Math.random() * 3)) * 80) )) 
-    allEnemies.push(enemy);
+    if (pauseState == false)
+    {
+        var enemy = new Enemy(-100,(55 + (Math.floor((Math.random() * 3)) * 80) )) 
+        allEnemies.push(enemy);
+    }
     //Removes enemies from allEnemies when they're off the screen. 
     //It waits until a bug is ~100 pixels off the screen to prevent random disappearances.
     //This should probably called somewhere else, though.
@@ -107,8 +107,7 @@ function pushEnemies () {
 }
 
 /*A simple bounding box algorithm for collision detection.
-  This will have to be modified because the game's graphics
-  contain large amounts of vertical whitespace.
+  This was modified because the game's graphics contain large amounts of vertical whitespace.
   Based off code from:
   http://blog.sklambert.com/html5-canvas-game-2d-collision-detection/
 
@@ -130,7 +129,8 @@ function checkCollisions() {
         && (player.y - allEnemies[i].y) >= -20  
         ) //The second y-clause is required to prevent bugs below the player from registering as hits.
         {
-            
+            //Uncomment this block of code if collision detection breaks.
+
             /*
             window.alert("You got hit by something. Probably. Debug info: Your coords are ("
              + player.x + " , " + (player.x + player.width) + ") (" + player.y + " , "
@@ -153,7 +153,7 @@ function checkCollisions() {
 }
 
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Player.handleInput() method. I didn't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -167,7 +167,23 @@ document.addEventListener('keyup', function(e) {
 });
 
 //Linked to a button on the page.
-//Modal pausing is... a bit simpler than expected.
+//Implementing a more robust pause that keeps bugs from moving while the game is paused.
+//See engine.js for more details.
 function changePauseState(){
-    window.alert("The game is now paused. Close this dialog to unpause.");
+    
+    //Stops the update function from doing anything, though it still gets called.
+    if(pauseState == false) { pauseState = true; }
+    else pauseState = false;
+
+    //Legacy pause function. Javascript modals don't play nice with game loops, it seems.
+    /*
+    var getPauseWindow = window.confirm("The game is now paused. Press 'OK' to continue, or 'Cancel' to restart.");
+    if(getPauseWindow == true) {
+        pauseState = false;
+    }
+    else {
+        pauseState = false;
+        resetGame();
+    }
+    */
 }

@@ -83,9 +83,12 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        checkCollisions();
-        document.getElementById("score").innerHTML = "Score: " + currentScore;
+        //Just make sure the game's not paused before adjusting anything's position.
+        if(pauseState == false) {  
+            updateEntities(dt);
+            checkCollisions();
+            document.getElementById("score").innerHTML = "Score: " + currentScore;
+        }
     }
 
     /* This is called by the update function  and loops through all of the
