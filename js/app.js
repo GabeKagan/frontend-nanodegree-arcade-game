@@ -20,8 +20,9 @@ var Enemy = function(x,y) {
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
 
-    this.x += dt*100*this.speed; //Use the enemy's computed speed and our delta to compute movement.
-    //It might be interesting to dynamically adjust monster speed in later versions.
+    this.x += dt*(50 + (currentScore/10))*this.speed; 
+    //Use the enemy's computed speed and our delta to compute movement.
+    //Monsters now move faster as your score gets higher, but start slower. 
 }
 
 // Draw the enemy on the screen, required method for game.
@@ -59,8 +60,10 @@ Player.prototype.handleInput = function(code) {
             this.y -= 84;
             playerMove.play();
             if(this.y <= 0) { //This conditional moves the player back to the start and increases their score.
+             this.x = 200;
              this.y = 375;
              currentScore += 100;
+             console.log((1000 - (currentScore/20)));
              }; 
             break;
         case "right":
@@ -86,9 +89,11 @@ var currentScore = 0; //Earned by playing well, lost by resetting the game.
 var playerMove = new Audio("js/move.wav");
 var playerDeath = new Audio("js/exploding_crap.wav")
 
-//Generates a new enemy every second. For consistency, this is not tied to the delta.
+//Generates a new enemy every second at the start. For consistency, this is not tied to the delta.
+//As the player's score increases, so does the amount of bugs on the screen.
+//It should be essentially impossible to get to 20,000 points, at which point this function breaks.
 //Spawn times should be consistent on all but the oldest and weakest computers.
-setInterval(function () {pushEnemies()}, 1000); 
+setInterval(function () {pushEnemies()}, (1000 - (currentScore/20)) ); 
 
 function pushEnemies () {
     /*
@@ -170,7 +175,7 @@ document.addEventListener('keyup', function(e) {
 //Implementing a more robust pause that keeps bugs from moving while the game is paused.
 //See engine.js for more details.
 function changePauseState(){
-    
+
     //Stops the update function from doing anything, though it still gets called.
     if(pauseState == false) { pauseState = true; }
     else pauseState = false;
