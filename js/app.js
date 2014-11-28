@@ -50,33 +50,34 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput = function(code) {
     //Converts keyboard input codes (mapped to words instead of IDs) into player movement. 
-    switch (code) {
-        case "left":
-            if(this.x == 0) { break; } //If -> breaks prevent the player from moving offscreen.
-            this.x -= 100;
-            playerMove.play();
-            break;
-        case "up":
-            this.y -= 84;
-            playerMove.play();
-            if(this.y <= 0) { //This conditional moves the player back to the start and increases their score.
-             this.x = 200;
-             this.y = 375;
-             currentScore += 100;
-             console.log((1000 - (currentScore/20)));
-             }; 
-            break;
-        case "right":
-            if(this.x == 400) { break; } 
-            this.x += 100;
-            playerMove.play();
-            break;
-        case "down": 
-            if(this.y == 375) { break; } 
-            this.y += 84;
-            playerMove.play();
-            break;
-
+    if(pauseState == false)  {
+        switch (code) {
+            case "left":
+                if(this.x == 0) { break; } //If -> breaks prevent the player from moving offscreen.
+                this.x -= 100;
+                playerMove.play();
+                break;
+            case "up":
+                this.y -= 84;
+                playerMove.play();
+                if(this.y <= 0) { //This conditional moves the player back to the start and increases their score.
+                 this.x = 200;
+                 this.y = 375;
+                 currentScore += 100;
+                 console.log((1000 - (currentScore/20)));
+                 }; 
+                break;
+            case "right":
+                if(this.x == 400) { break; } 
+                this.x += 100;
+                playerMove.play();
+                break;
+            case "down": 
+                if(this.y == 375) { break; } 
+                this.y += 84;
+                playerMove.play();
+                break;
+        }
     }
 }
 
